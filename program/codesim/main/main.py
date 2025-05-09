@@ -96,11 +96,13 @@ def check_for_update():
 		tm.sleep(2)
 		print(f"Unexpected error: {e}")
 
+repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 def pull_update():
 	letterby("Pulling updates...")
 	tm.sleep(1)
 	try:
-		subprocess.run(["git", "pull", "origin", "main"], check=True, text=True, capture_output=True)
+		subprocess.run(["git", "pull", "origin", "main"], cwd=repo_root, check=True, text=True, capture_output=True)
 		letterby("Updates pulled successfully.")
 		letterby("Run 'codesim --install' to install it.")
 	except subprocess.CalledProcessError as e:
@@ -113,12 +115,15 @@ def pull_update():
 		print()
 		tm.sleep(2)
 		print("Error: Git is not installed or not found in PATH.")
+	except OSError as e:
+		print()
+		tm.sleep(2)
+		print(f"Error accessing repository directory: {e}")
 
 def install_update():
 	letterby("Installing updates...")
 	tm.sleep(1)
 	try:
-		repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 		subprocess.run(["sudo", "pip", "install", "-e", "."], cwd=repo_root, check=True, text=True, capture_output=True)
 		letterby("Updates installed successfully.")
 	except subprocess.CalledProcessError as e:
