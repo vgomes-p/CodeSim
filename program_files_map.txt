@@ -1,0 +1,30 @@
+CodeSim/ /*github repository*/
+├── program/
+│	├── codesim/
+│	│	├── main/
+│	│	│	├── __init__.py
+│	│	│	├── simshell.py
+│	│	│	└── main.py
+│	│	├── utils/
+│	│	│	├── __init__.py
+│	│	│	├── countdown.py
+│	│	│	├── database.py
+│	│	│	├── utils_fun.py
+│	│	│	└── eval.py
+│	│	├── assignments/
+│	│	│	├── c_coding_subjects/
+│	│	│	│	├── lv0
+│	│	│	│	├── lv1
+│	│	│	│	└── lv2
+│	│	│	└── python_coding_subjects/
+│	│	│		├── lv0
+│	│	│		├── lv1
+│	│	│		└── lv2
+│	│	└── __init__.py
+│	├── setup.py
+│	└── README.md (for long discription)
+├── .gitignore
+├── CONTRIBUTING.md
+├── LICENSE
+├── program_files_map.txt
+└── README.md
