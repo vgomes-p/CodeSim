@@ -5,10 +5,10 @@ from codesim.utils.countdown import format_time, start_countdown, get_remaining_
 
 CODESHELL = 'codeshell $> '
 CREATESHELL = 'USER CREATOR $> '
-SIMTEXT = f"""eval: evaluate
+SIMTEXT = """eval: evaluate
 finish: end the exam
 time: show much time rest
-update: shows assigment, directory, assigment's score, time, number of try and points to receive"""
+update: shows assignment, directory, assignment's score, time, number of try and points to receive"""
 
 def simshell():
 	while True:
@@ -69,6 +69,7 @@ def simshell():
 			tm.sleep(0.5)
 			print(f"User {login} created as a {language} coder at level {level}!")
 			break
+
 	if level > 0:
 		while True:
 			tm.sleep(0.5)
@@ -86,7 +87,7 @@ def simshell():
 			selected_level = int(choice)
 			if selected_level > level:
 				tm.sleep(0.5)
-				print(f"Error: You cannot choose a level higher than {level}.Please choose a level between 0 and {level}.")
+				print(f"Error: You cannot choose a level higher than {level}. Please choose a level between 0 and {level}.")
 			elif 0 <= selected_level <= level:
 				break
 			else:
@@ -94,49 +95,54 @@ def simshell():
 				print(f"Error: Please choose a level between 0 and {level}.")
 	else:
 		selected_level = 0
+
 	clear()
 	tm.sleep(2)
 	init_sim = input(f"""You are about to take an exam for {language} programming at level {selected_level}!
-You will have 4h:00m:00s to finish this exam and need 100/100 to pass to the level {level + 1}
-If you are ready, press ENTER to start!""")
+You will have 4h:00m:00s to finish this exam and need 100/100 to pass to level {level + 1}
+If you are ready, press ENTER to start!
+Available commands:
+{SIMTEXT}
+""")
 	while init_sim != '':
 		init_sim = input("Press ENTER to start!")
+
 	start_countdown(14400)
 	finish_stats = 0
 	tm.sleep(1)
-	while finish_stats != 1 and get_remaining_time() > 0:
-		general_score = 0
-		try_num = 0
-		eval_score = 0
-		# assigment = selected_assigment(level)
-		assigment_name = "upcoming" #get_assigment_name(level, assigment)
-		UPDATETEXT = f"""You are on assigment {assigment_name} for 10 points of your score
-You tried this assigment {try_num} times in this session!
+
+	general_score = 0
+	try_num = 0
+	eval_score = 0
+	assignment_name = "upcoming"  #wip: função que pega nome do execicio
+	UPDATETEXT = f"""You are on assignment {assignment_name} for 10 points of your score
+You tried this assignment {try_num} times in this session!
 Your current score is {eval_score}/100 and still have {format_time(get_remaining_time())} to finish this exam session"""
+
+	while finish_stats != 1 and get_remaining_time() > 0:
 		print(UPDATETEXT)
-		while general_score != 100:
-			entry = input(f"{CODESHELL}").strip()
+		while general_score != 100 and get_remaining_time() > 0:
+			entry = input(CODESHELL).strip().lower()
 			if entry == "time":
 				print(f"You still have {format_time(get_remaining_time())} to finish the test!")
 			elif entry == "finish":
 				finish_stats = 1
 				break
 			elif entry == "eval":
-				eval_score = 0#eval()
+				eval_score = 0  #wip: eval()
 				if eval_score == 100:
 					general_score = 100
 				else:
+					try_num += 1
 					print("FAIL!!!")
-					eval_fail = input(f"You still have {format_time(get_remaining_time())} to finish the test.\nPress ENTER to continue!")
-					while eval_fail != '':
-						print("Press ENTER to continue!")
-					eval_fail = None
-				pass #implementar a logica de avaliação
+					input(f"You still have {format_time(get_remaining_time())} to finish the test.\nPress ENTER to continue!")
 			elif entry == "update":
 				print(UPDATETEXT)
 			else:
 				print(f"Error: '{entry}' is not a valid command!")
-		continue
+		if general_score == 100 or finish_stats == 1:
+			break
+
 	clear()
 	letterby('[SIMULATOR ENDED]')
 	tm.sleep(2)
@@ -145,5 +151,3 @@ Your current score is {eval_score}/100 and still have {format_time(get_remaining
 		print(f"Program will be finished in {c} seconds")
 		tm.sleep(1)
 		clear()
-
-

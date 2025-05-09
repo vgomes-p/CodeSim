@@ -1,11 +1,13 @@
-from . import simshell
+from .simshell import simshell
 from codesim.utils.database import init_db, remove_user, reset_database
 from codesim.utils.utils_fun import clear, letterby
 import pkg_resources
 import time as tm
 import argparse
 import sys
-
+import requests
+import subprocess
+from packaging import version
 
 def main():
 	init_db()
@@ -53,19 +55,78 @@ def main():
 		print("Consider checking for updates with 'codesim --check-update'")
 		simshell()
 
-
 def check_for_update():
 	letterby("Checking for updates...")
-
+	tm.sleep(1)
+	try:
+		response = requests.get("https://api.github.com/repos/vgomes-p/CodeSim/releases/latest")
+		response.raise_for_status()
+		latest_version = response.json()["tag_name"].lstrip("v")
+		current_version = pkg_resources.get_distribution("codesim").version
+		try:
+			latest_ver = version.parse(latest_version)
+			current_ver = version.parse(current_version)
+			if latest_ver > current_ver:
+				letterby(f"Available update: {latest_version}")
+				letterby(f"(current: {current_version})")
+				letterby("Run 'codesim --pull' to pull it.")
+			else:
+				letterby("You are using the latest version.")
+		except version.InvalidVersion:
+			if latest_version != current_version:
+				letterby(f"Available update: {latest_version}")
+				letterby(f"(current: {current_version})")
+				letterby("Run 'codesim --pull' to pull it.")
+			else:
+				letterby("You are using the latest version.")
+	except requests.HTTPError as e:
+		print()
+		tm.sleep(2)
+		if e.response.status_code == 404:
+			print("No releases found in the repository. Please wait until a release is created.")
+		else:
+			print(f"Error checking for update: {e}")
+	except requests.RequestException as e:
+		print()
+		tm.sleep(2)
+		print(f"Network error checking for update: {e}")
+	except Exception as e:
+		print()
+		tm.sleep(2)
+		print(f"Unexpected error: {e}")
 
 def pull_update():
 	letterby("Pulling updates...")
-
+	tm.sleep(1)
+	try:
+		subprocess.run(["git", "pull", "origin", "main"], check=True, text=True, capture_output=True)
+		letterby("Updates pulled successfully.")
+		letterby("Run 'codesim --install' to install it.")
+	except subprocess.CalledProcessError as e:
+		print()
+		tm.sleep(2)
+		print(f"Error pulling updates: {e.stderr if e.stderr else e}")
+		if "There is no tracking information" in e.stderr:
+			print("Try setting up tracking with: git branch --set-upstream-to=origin/main main")
+	except FileNotFoundError:
+		print()
+		tm.sleep(2)
+		print("Error: Git is not installed or not found in PATH.")
 
 def install_update():
 	letterby("Installing updates...")
-
-
+	tm.sleep(1)
+	try:
+		subprocess.run(["pip", "install", "-e", "."], check=True, text=True, capture_output=True)
+		letterby("Updates installed successfully.")
+	except subprocess.CalledProcessError as e:
+		print()
+		tm.sleep(2)
+		print(f"Error installing updates: {e.stderr if e.stderr else e}")
+	except FileNotFoundError:
+		print()
+		tm.sleep(2)
+		print("Error: pip is not installed or not found in PATH.")
 
 if __name__ == "__main__":
 	main()
