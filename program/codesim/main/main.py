@@ -1,13 +1,14 @@
 from .simshell import simshell
 from codesim.utils.database import init_db, remove_user, reset_database
 from codesim.utils.utils_fun import clear, letterby
+from packaging import version
 import pkg_resources
 import time as tm
+import subprocess
+import requests
 import argparse
 import sys
-import requests
-import subprocess
-from packaging import version
+import os
 
 def main():
 	init_db()
@@ -117,7 +118,8 @@ def install_update():
 	letterby("Installing updates...")
 	tm.sleep(1)
 	try:
-		subprocess.run(["pip", "install", "-e", "."], check=True, text=True, capture_output=True)
+		repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+		subprocess.run(["sudo", "pip", "install", "-e", "."], cwd=repo_root, check=True, text=True, capture_output=True)
 		letterby("Updates installed successfully.")
 	except subprocess.CalledProcessError as e:
 		print()
@@ -127,6 +129,10 @@ def install_update():
 		print()
 		tm.sleep(2)
 		print("Error: pip is not installed or not found in PATH.")
+	except OSError as e:
+		print()
+		tm.sleep(2)
+		print(f"Error accessing repository directory: {e}")
 
 if __name__ == "__main__":
 	main()
