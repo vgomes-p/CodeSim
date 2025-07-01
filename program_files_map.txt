@@ -12,14 +12,10 @@ CodeSim/ /*github repository*/
 │	│	│	├── utils_fun.py
 │	│	│	└── eval.py
 │	│	├── assignments/
-│	│	│	├── c_coding_subjects/
-│	│	│	│	├── lv0
-│	│	│	│	├── lv1
-│	│	│	│	└── lv2
 │	│	│	└── python_coding_subjects/
 │	│	│		├── lv0
 │	│	│		├── lv1
-│	│	│		└── lv2
+│	│	│		└── lv2...
 │	│	└── __init__.py
 │	├── setup.py
 │	└── README.md (for long discription)

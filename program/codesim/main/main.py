@@ -53,6 +53,8 @@ def main():
 		sys.exit(0)
 	else:
 		tm.sleep(1)
+		clear()
+		tm.sleep(1)
 		print("Consider checking for updates with 'codesim --check-update'")
 		simshell()
 

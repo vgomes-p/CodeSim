@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 NAME = "codesim"
-VERSION = "0.0.1b3"
+VERSION = "0.0.1b4"
 DESCRIPTION = "A Code Exam Simulator for programmers and students"
 AUTHOR = "Vinny"
 AUTHOR_EMAIL = ""
