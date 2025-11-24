@@ -14,7 +14,7 @@ cd CodeSim/program
 
 ### Install
 ```bash
-sudo pip install .
+sudo pip install . --break-system-packages
 ```
 
 ## How to use:

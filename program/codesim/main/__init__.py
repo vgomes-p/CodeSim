@@ -1,1 +1,1 @@
-from .simshell import simshell
+from .simshell import run_program
