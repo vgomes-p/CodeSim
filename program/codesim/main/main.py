@@ -126,7 +126,7 @@ def install_update():
     letterby("Installing updates...")
     tm.sleep(1)
     try:
-        subprocess.run(["sudo", "pip", "install", "-e", "."], cwd=repo_root, check=True, text=True, capture_output=True)
+        subprocess.run(["sudo", "pip", "install", "-e", ".", "-break-system-packages"], cwd=repo_root, check=True, text=True, capture_output=True)
         letterby("Updates installed successfully.")
     except subprocess.CalledProcessError as e:
         print()

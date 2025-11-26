@@ -1,12 +1,13 @@
-# External Imports
+#Imports
 from codesim.utils.countdown import format_time, start_countdown, get_remaining_time
 from codesim.utils.database import add_user, get_user, user_exists
 from codesim.utils.utils_fun import clear, letterby, press_enter
+from codesim.eval.eval import eval
 from contextlib import contextmanager
-# Internal Imports
 from codesim.utils.colors import *
 import time as tm
 import signal
+
 
 # General Variables
 CODESHELL = GREEN + 'codeshell $> ' + DEFAULT
@@ -18,6 +19,9 @@ SIMTEXT = f"""{PINK}<<< COMMANDS AVAILABLE >>>{DEFAULT}
 {CYAN}finish:{DEFAULT} end the exam
 {CYAN}time:{DEFAULT} show much time rest
 {CYAN}update:{DEFAULT} shows exam current status"""
+
+#languages
+valid_languages = ["Python"]
 
 
 @contextmanager
@@ -46,13 +50,13 @@ def create_new_user(login: str) -> tuple[str, str]:
             tm.sleep(0.5)
             clear()
             print(RED, "Error: Please, empty is not a language. Write a valid language!", DEFAULT)
-        elif language in ['Python']:
+        elif language in valid_languages:
             tm.sleep(0.5)
             break
         else:
             tm.sleep(0.5)
             clear()
-            print(RED, f"Error: '{language}' is not a valid language. Please choose 'Python'.", DEFAULT)
+            print(RED, f"Error: '{language}' is not a valid language. Please choose one of the following language:\n{str(valid_languages).replace("[", "").replace("]", "").replace('"', "")}.", DEFAULT)
     while True:
         print("Great, now choose the level you want to start with (It is highly suggested you start with level 0, even if you're already advanced!)\n[0 for beginner and 10 for advanced]")
         tm.sleep(0.5)
@@ -99,7 +103,7 @@ def welcome() -> tuple[str, str]:
             language, level = create_new_user(login=login)
             return language, level
 
-def select_level(actual_level: str) -> str:
+def select_level(actual_level: int) -> str:
     if actual_level > 0: #if user's language knowledge level is not 0, ask which level they want to take the test (ask it everytime while user level for any user whose level is bigger than 0, so the user may choose to take exam from previous level)
         while True:
             tm.sleep(0.5)
@@ -134,42 +138,82 @@ You will have {CYAN}4h:00m:00s{DEFAULT} to finish this exam.
 If you are ready, press ENTER to start!""")
     press_enter()
 
-def update_text(actual_assigment_name: str, remaining_time: str, try_num: int, eval_score: int):
+def update_text(actual_assigment_name: str, remaining_time: str, try_num: int, general_score: int):
     tm.sleep(2)
     print(f"""{PINK}<<< UPDATE >>>{DEFAULT}
 You are working on assignment {CYAN + actual_assigment_name + DEFAULT}, worth 10 points.
 You have attempted this assignment {PINK + str(try_num) + DEFAULT} time(s) during this session.
-Your current score is {YLOW + str(eval_score)}/100{DEFAULT}.
-You still have {CYAN + remaining_time + DEFAULT} remaining to finish this exam session.""")
+Your current score is {YLOW + str(general_score)}/100{DEFAULT}.
+You still have {CYAN + remaining_time + DEFAULT} remaining to finish this exam session.
+Press ENTER to continue!""")
     press_enter()
 
-def simshell(init_assigment: str, remaining_time: str, selected_level: str, actual_level: str):
+def new_assigment_text(actual_assigment_name: str, remaining_time: str, try_num: int, general_score: int):
+    tm.sleep(2)
+    print(f"""{PINK}<<< NEW ASSIGNMENT >>>{DEFAULT}
+You are not working on assignment {CYAN + actual_assigment_name + DEFAULT}, worth 10 points.
+You have attempted this assignment {PINK + str(try_num) + DEFAULT} time(s) during this session.
+Your current score is {YLOW + str(general_score)}/100{DEFAULT}.
+You still have {CYAN + remaining_time + DEFAULT} remaining to finish this exam session.
+Press ENTER to continue!""")
+    press_enter()
+
+def _finish(actual_assigment_name: str, remaining_time: str, general_score: int) -> int:
+    valid_ret = ['r', 'f']
+    print(f"""{RED}<<< ARE YOU SURE YOU WANT TO FINISH THIS SESSION? >>>{DEFAULT}
+You are working on assignment {CYAN + actual_assigment_name + DEFAULT}.
+You already scored {PINK + str(general_score) + "/100" + DEFAULT}.
+You still have {CYAN + remaining_time + DEFAULT} remaining to finish this exam session.
+{PINK}['r' or any entry to return to session and 'f' to finish]""")
+    ret = input(CODESHELL).lower()
+    if not ret:
+        clear()
+        print("Entry not accepted, returning to session")
+        return 0
+    if ret not in valid_ret:
+        clear()
+        print("Entry not accepted, returning to session")
+        return 0
+    if ret == 'r':
+        clear()
+        print("Returning to session")
+        return 0
+    else:
+        return 1
+
+def simshell(init_assigment: str, remaining_time: str, selected_level: str, actual_level: str, try_num: int, general_score: int):
     print(SIMTEXT)
-    update_text(actual_assigment_name=init_assigment, remaining_time=remaining_time, try_num=0, eval_score=0)
+    update_text(actual_assigment_name=init_assigment, remaining_time=remaining_time, try_num=try_num, general_score=general_score)
     finish_stats = 0 # create a holder for "finish" command signal
     while finish_stats != 1 and get_remaining_time() > 0: #Main loop that will run while finish signal is not given and time it not out
         assignment_name = init_assigment
-        while get_remaining_time() > 0:
+        while get_remaining_time() > 0 and general_score != 100:
             with block_signals():
                 try:
                     entry = input(CODESHELL).strip().lower()
                     if entry == "time":
                         print(f"You still have {CYAN + format_time(get_remaining_time()) + DEFAULT} remaining to finish this exam session!")
                     elif entry == "finish":
-                        finish_stats = 1
-                        break
+                        fret = _finish(actual_assigment_name=assignment_name, remaining_time=remaining_time, general_score=general_score)
+                        if fret == 0:
+                            update_text(actual_assigment_name=assignment_name, remaining_time=remaining_time, try_num=try_num, general_score=general_score)
+                        else:
+                            finish_stats = 1
+                            break
                     elif entry == "eval":
-                        eval_score = 0  #wip: eval()
+                        eval_score = 100 #eval()
                         if eval_score == 100:
-                            general_score = 100
+                            general_score += 10
+                            try_num = 0
                             assignment_name = "new_assignment()"
+                            new_assigment_text(actual_assigment_name=assignment_name, remaining_time=remaining_time, try_num=try_num, general_score=general_score)
                         else:
                             try_num += 1
                             print(RED, BOLD, "××× ASSIGNMENT FAILED ×××", DEFAULT, sep='')
                             print(f"You still have {CYAN + format_time(get_remaining_time()) + DEFAULT}  remaining to finish this exam session.\nPress ENTER to continue!")
                             press_enter()
                     elif entry == "update":
-                        update_text(assignment_name, remaining_time, try_num, eval_score)
+                        update_text(actual_assigment_name=assignment_name, remaining_time=remaining_time, try_num=try_num, general_score=general_score)
                     elif entry == "clear":
                         clear()
                     elif entry == "help":
@@ -189,7 +233,6 @@ def simshell(init_assigment: str, remaining_time: str, selected_level: str, actu
         return 0
     return 0
 
-
 def finish_program():
     clear()
     letterby('[SIMULATOR ENDED]')
@@ -200,22 +243,19 @@ def finish_program():
         tm.sleep(1)
         clear()
 
-
 def run_program():
     global general_score, try_num, eval_score # Global vars for score, how many tries, and assigment score
     general_score = 0
     try_num = 0
     eval_score = 0
-
-    level, language = welcome()
-    selected_level = select_level(level=level)
-
+    language, level = welcome()
+    selected_level = select_level(actual_level=level)
     clear()
     intro_text(language=language, selected_level=selected_level)
     start_countdown(14400) #start time countdown
     tm.sleep(1)
     assignment_name = "upcoming"  #wip: função que pega nome do execicio || Get assigment name
     remaining_time = str(format_time(get_remaining_time()))
-    simshell(init_assigment=assignment_name, remaining_time=remaining_time, selected_level=selected_level, actual_level=level)
+    simshell(init_assigment=assignment_name, remaining_time=remaining_time, selected_level=selected_level, actual_level=level, try_num=try_num, general_score=general_score)
     finish_program()
     return 0
