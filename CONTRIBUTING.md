@@ -32,7 +32,7 @@ Add your profile on contributors list with the following structure:
 <!-- If you improved a feature, your are a co-developer from it -->
 
 ```
-[![Add your profile](https://img.shields.io/badge/add_my_contributor_profile-purple?style=for-the-badge)](contributors.md)
+[![Add your profile](https://img.shields.io/badge/add_my_contributor_profile-purple?style=for-the-badge)](CONTRIBUTORS.md)
 
 ## Development Guidelines
 
@@ -50,7 +50,7 @@ Add your profile on contributors list with the following structure:
 - Test your changes before submitting
 - Update the [program files map](program_files_roadmap.txt)
 - If your contribution introduces a new feature, try to explain why it exists and how it should be used.
-- If you need help on a features, you may contact one contributor from [contributors list](contributors.md) for development co.lab
+- If you need help on a features, you may contact one contributor from [contributors list](CONTRIBUTORS.md) for development co.lab
 
 #### Here is the actual program files roadmap (also in [program_files_roadmap.txt](program_files_roadmap.txt))
 ```txt
