@@ -22,7 +22,7 @@ Add your profile on contributors list with the following structure:
 ```md
 ***
 ## YOUR NAME
-[![github](https://img.shields.io/badge/github-blue?style=for-the-badge)](https://github.com/username) <!-- you can change the color by changing the color name after 'USERNAME-' -->
+[![github](https://img.shields.io/badge/github-blue?style=for-the-badge)](https://github.com/username)
 ### Top 3 Skills
 - List your top skills
 ### Work with
