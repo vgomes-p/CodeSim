@@ -3,7 +3,7 @@ Here you can get to know all CODESIM contributors. They are the ones who make th
 
 ***
 ## Vinicius Eduardo
-[![github](https://img.shields.io/badge/github-blue?style=for-the-badge)](https://github.com/vgomess-p)
+[![github](https://img.shields.io/badge/github-blue?style=for-the-badge)](https://github.com/vgomes-p)
 ### Top 3 Skills
 - Project planning
 - Translation (Portuguese -> English)
