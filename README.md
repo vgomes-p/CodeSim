@@ -24,10 +24,14 @@ git clone https://github.com/vgomes-p/CodeSim.git
 ```bash
 cd CodeSim/program
 ```
+### Install required libs
+```bash
+make requirements
+```
 
 ### Install the program
 ```bash
-sudo pip install . --break-system-packages
+make install
 ```
 
 After installation, the codesim command will be available globally.
