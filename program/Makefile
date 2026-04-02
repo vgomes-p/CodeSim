@@ -3,7 +3,7 @@ requirements:
 	@python3 -m pip install --upgrade requests --break-system-packages
 
 install:
-	@export REPO_DIR=$(pwd)
+	@export REPO_DIR="$(pwd)"
 	@git clone https://github.com/vgomes-p/CodeSim.git ~/.codesim
 	@sudo pip install ~/.codesim/program/. --break-system-packages
 	@echo "Now you can run CodeSim by executing 'codesim' in your terminal."
