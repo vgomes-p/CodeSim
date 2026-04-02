@@ -23,6 +23,7 @@ def init_assigment_db():
     conn.commit()
     conn.close()
 
+
 def add_assignment(language: str, level: int, assigment_id: int, assignment_name: str, assignment_text: str, assignment_test: str, assignment_output: str):
     """Add a new user to the database."""
     conn = sqlite3.connect(ASSIGNMENT_DB_PATH)
@@ -30,6 +31,7 @@ def add_assignment(language: str, level: int, assigment_id: int, assignment_name
     cursor.execute("INSERT INTO assignments (assignment_languages, assignment_level, assigment_id, assignment_name, assignment_text, assignment_test, assignment_output) VALUES (?, ?, ?, ?, ?, ?, ?)", (language, level, assigment_id, assignment_name, assignment_text, assignment_test, assignment_output))
     conn.commit()
     conn.close()
+
 
 def _get_assignment_amount(language: str, level: int) -> int:
     """Get the amount of assigments for a specific language and level."""
@@ -40,6 +42,7 @@ def _get_assignment_amount(language: str, level: int) -> int:
     amount = cursor.fetchone()
     conn.close()
     return amount[0] if amount else 0
+
 
 def update_assignment_amount(language: str, level: int, amount: int):
     """Update the amount of assigments for a specific language and level."""
@@ -54,35 +57,39 @@ def update_assignment_amount(language: str, level: int, amount: int):
     conn.commit()
     conn.close()
 
+
 long_line = "============================================================================="
 
-def register_assignment():
-    language = input("Enter the programming language for the assignment: ")
-    level = int(input("Enter the difficulty level for the assignment (0-10): "))
-    assignment_name = input("Enter the name of the assignment: ")
 
-    print("Enter the text for the assignment (end with a single line containing 'END'):")
+def register_assignment():
+    langs_suffix = {"python": "py", "c": "c", "cpp": "cpp", "java": "java"}
+    language = input("Programming language: ")
+    level = int(input("Difficulty level (0-10): "))
+    assignment_name = input("Name: ")
+    allowed_functions = input("Allowed functions (comma separated, leave empty for no restrictions): ")
+
+    print("Assignment Subject(enter'EOF' when finished'):")
     assignment_text = ""
     while True:
         line = input()
-        if line.strip() == "END":
+        if line.strip() == "EOF":
             break
         assignment_text += line + "\n"
-    subject = f"assignment name: {assignment_name}\nfolder: {assignment_name}/\nfiles to turn in: {assignment_name}.{"py" if language.lower() == "python" else "c"}\n{long_line}\n\n\n{assignment_text}\n{long_line}"
+    subject = f"assignment name: {assignment_name}\nfolder to turn in: {assignment_name}/\nfiles to turn in: {assignment_name}.{langs_suffix[language]}\nAllowed functions: {allowed_functions}\n{long_line}\n\n{assignment_text}\n\n{long_line}"
 
-    print("Enter the test code for the assignment (end with a single line containing 'END'):")
+    print("Test code for the assignment (enter'EOF' when finished):")
     assignment_test = ""
     while True:
         line = input()
-        if line.strip() == "END":
+        if line.strip() == "EOF":
             break
         assignment_test += line + "\n"
 
-    print("Enter the expected output for the assignment (end with a single line containing 'END'):")
+    print("Expected output for the assignment (enter 'EOF' when finished):")
     assignment_output = ""
     while True:
         line = input()
-        if line.strip() == "END":
+        if line.strip() == "EOF":
             break
         assignment_output += line + "\n"
     
@@ -90,6 +97,7 @@ def register_assignment():
     add_assignment(language=language, level=level, assigment_id=assigment_id, assignment_name=assignment_name, assignment_text=subject, assignment_test=assignment_test, assignment_output=assignment_output)
     update_assignment_amount(language, level, assigment_id)
     print(GREEN + "Assignment added successfully!" + DEFAULT)
+
 
 def assignment_maker_shell():
     print(GREEN + """#=============================================================================#

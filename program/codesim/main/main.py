@@ -1,5 +1,5 @@
 from .simshell import run_program
-from .assigment_maker_shell import assignment_maker_shell, init_assigment_db
+from .assignment_maker_shell import assignment_maker_shell, init_assigment_db
 from codesim.utils.handle_users import init_db, remove_user, reset_database
 from codesim.utils.utils_fun import clear, letterby
 from codesim.utils.colors import *
