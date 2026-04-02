@@ -2,7 +2,8 @@
 from codesim.utils.countdown import format_time, start_countdown, get_remaining_time
 from codesim.utils.database import add_user, get_user, user_exists
 from codesim.utils.utils_fun import clear, letterby, press_enter
-from codesim.eval.eval import eval
+from codesim.utils.handle_assigments import get_assignment
+from codesim.eval.handle_eval import eval
 from contextlib import contextmanager
 from codesim.utils.colors import *
 import time as tm
@@ -22,6 +23,7 @@ SIMTEXT = f"""{PINK}<<< COMMANDS AVAILABLE >>>{DEFAULT}
 
 #languages
 valid_languages = ["Python"]
+LANGUAGE = ""
 
 
 @contextmanager
@@ -244,7 +246,7 @@ def finish_program():
         clear()
 
 def run_program():
-    global general_score, try_num, eval_score # Global vars for score, how many tries, and assigment score
+    global general_score, try_num, eval_score, language
     general_score = 0
     try_num = 0
     eval_score = 0
@@ -252,9 +254,9 @@ def run_program():
     selected_level = select_level(actual_level=level)
     clear()
     intro_text(language=language, selected_level=selected_level)
-    start_countdown(14400) #start time countdown
+    start_countdown(14400) #start time countdown with 4 hours (14400 seconds)
     tm.sleep(1)
-    assignment_name = "upcoming"  #wip: função que pega nome do execicio || Get assigment name
+    assignment_name = get_assignment(language, level, in_level)  #wip: função que pega nome do execicio || Get assigment name
     remaining_time = str(format_time(get_remaining_time()))
     simshell(init_assigment=assignment_name, remaining_time=remaining_time, selected_level=selected_level, actual_level=level, try_num=try_num, general_score=general_score)
     finish_program()

@@ -1,6 +1,8 @@
 from .simshell import run_program
-from codesim.utils.database import init_db, remove_user, reset_database
+from .assigment_maker_shell import assignment_maker_shell
+from codesim.utils.handle_users import init_db, remove_user, reset_database
 from codesim.utils.utils_fun import clear, letterby
+from codesim.utils.colors import *
 from packaging import version
 import pkg_resources
 import time as tm
@@ -16,10 +18,12 @@ def main():
     parser = argparse.ArgumentParser(description="Code Exam Simulator")
     parser.add_argument("--reset-all", action="store_true", help="Delete all takers registered")
     parser.add_argument("--remove-login", help="Remove a specific taker from database")
+    parser.add_argument("--make-assignment", action="store_true", help="Open the assignment maker shell")
     parser.add_argument("--version", action="store_true", help="Display the program's version")
     parser.add_argument("--check-update", action="store_true", help="Check if there are any updates available")
     parser.add_argument("--pull", action="store_true", help="Pull the latest update from GitHub")
-    parser.add_argument("--install", action="store_true", help="Install the latest updates")
+    parser.add_argument("--update", action="store_true", help="Install the latest updates")
+    parser.add_argument("--uninstall", action="store_true", help="Prepare way to unsinstall the program")
     parser.add_argument("--start", action="store_true", help="Start the simulator")
 
     args = parser.parse_args()
@@ -34,7 +38,7 @@ def main():
     elif args.pull:
         pull_update()
         sys.exit(0)
-    elif args.install:
+    elif args.update:
         install_update()
         sys.exit(0)
     elif args.reset_all:
@@ -50,6 +54,13 @@ def main():
             letterby(f"User {args.remove_login} removed successfully!")
         else:
             letterby(f"User {args.remove_login} not found.")
+        sys.exit(0)
+    elif args.make_assignment:
+        letterby("Opening Assignment Maker Shell...")
+        assignment_maker_shell()
+        sys.exit(0)
+    elif args.uninstall:
+        uninstall()
         sys.exit(0)
     else:
         tm.sleep(1)
@@ -98,7 +109,9 @@ def check_for_update():
         tm.sleep(2)
         print(f"Unexpected error: {e}")
 
-repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+#repo_root = "os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))"
+repo_root = "~/.codesim"
+program_root = "~/.codesim/program"
 
 def pull_update():
     letterby("Pulling updates...")
@@ -126,7 +139,7 @@ def install_update():
     letterby("Installing updates...")
     tm.sleep(1)
     try:
-        subprocess.run(["sudo", "pip", "install", "-e", ".", "-break-system-packages"], cwd=repo_root, check=True, text=True, capture_output=True)
+        subprocess.run(["sudo", "pip", "install", "-e", ".", "-break-system-packages"], cwd=program_root, check=True, text=True, capture_output=True)
         letterby("Updates installed successfully.")
     except subprocess.CalledProcessError as e:
         print()
@@ -140,6 +153,27 @@ def install_update():
         print()
         tm.sleep(2)
         print(f"Error accessing repository directory: {e}")
+
+def uninstall():
+    letterby("Starting the CodeSim process...")
+    print("Are you sure you want to uninstall CodeSim?\nAll your progress will be definitively lost (there is no way to recover it)\n(y/n): ", end="")
+    while True:
+        entry = input().strip().lower()
+        if entry == "y":
+            letterby("Uninstalling CodeSim...")
+            tm.sleep(1)
+            letterby("Deleting .codesim directory...")
+            tm.sleep(1)
+            letterby("To uninstall CodeSim, please run: sudo pip uninstall codesim --break-system-packages")
+            letterby("Thank you for using CodeSim! :)")
+            return (0)
+        elif entry == "n":
+            letterby("Uninstallation cancelled.")
+            return (0)
+        else:
+            print(f"{RED}Invalid input. Please enter 'y' or 'n'.{DEFAULT}")
+            continue
+
 
 if __name__ == "__main__":
     main()

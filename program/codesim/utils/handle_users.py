@@ -1,7 +1,7 @@
 import sqlite3
 import os
 
-DB_PATH = os.path.expanduser("~/codesim.db")
+DB_PATH = os.path.expanduser("~/.codesim/codesim.db")
 
 
 def init_db():
@@ -9,23 +9,9 @@ def init_db():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute('''CREATE TABLE IF NOT EXISTS users
-                 (login TEXT PRIMARY KEY, language TEXT, level INTEGER)''')
+                    (login TEXT PRIMARY KEY, language TEXT, level INTEGER)''')
     conn.commit()
     conn.close()
-
-def init_assigment_db():
-    conn = sqlite3.connect("../eval/assignments.db")
-    cursor = conn.cursor()
-    cursor.execute('''CREATE TABLE IF NOT EXISTS assignments
-                 (id INTEGER PRIMARY KEY, assignment_languages TEXT, assignment_level INTEGER, assignment_name TEXT, entry TEXT, expected TEXT)''')
-    conn.commit()
-
-def add_assignment(assignment_languages, assignment_level, assignment_name, entry, expected):
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute("INSERT INTO assignments (assignment_languages, assignment_level, assignment_name, entry, expected) VALUES (?, ?, ?, ?, ?)", (assignment_languages, assignment_level, assignment_name, entry, expected))
-    conn.commit()
-    conn.close
 
 def add_user(login, language, level):
     """Add a new user to the database."""
