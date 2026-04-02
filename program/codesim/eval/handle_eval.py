@@ -3,7 +3,7 @@ import sqlite3
 import importlib
 import os
 
-ASSIGNMENT_DB_PATH = "~/.codesim/databases/assignments.db"
+ASSIGNMENT_DB_PATH = os.path.expanduser("~/.codesim/databases/assignments.db")
 
 def test(entry: str, language: str, score: int=0) -> int:
     return 0
