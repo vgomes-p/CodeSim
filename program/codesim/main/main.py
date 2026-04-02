@@ -1,5 +1,5 @@
 from .simshell import run_program
-from .assigment_maker_shell import assignment_maker_shell
+from .assigment_maker_shell import assignment_maker_shell, init_assigment_db
 from codesim.utils.handle_users import init_db, remove_user, reset_database
 from codesim.utils.utils_fun import clear, letterby
 from codesim.utils.colors import *
@@ -57,6 +57,7 @@ def main():
         sys.exit(0)
     elif args.make_assignment:
         letterby("Opening Assignment Maker Shell...")
+        init_assigment_db()
         assignment_maker_shell()
         sys.exit(0)
     elif args.uninstall:

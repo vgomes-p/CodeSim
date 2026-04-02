@@ -5,7 +5,7 @@ from codesim.utils.colors import *
 from codesim.utils.utils_fun import clear
 from .simshell import block_signals
 
-ASSIGNMENT_DB_PATH = os.path.expanduser("~/.codesim/databases/assignments.db")
+ASSIGNMENT_DB_PATH = os.path.expanduser("~/.codesim/program/databases/assignments.db")
 MAKER_SHELL = f"{CYAN}Assignment Maker Shell{DEFAULT}: "
 HELP = """Create: Create a new assignment.
 Clear: Clear the screen.
@@ -16,7 +16,7 @@ def init_assigment_db():
     """Initialize the database and create the assigments table if it doesn't exist."""
     conn = sqlite3.connect(ASSIGNMENT_DB_PATH)
     cursor = conn.cursor()
-    cursor.execute('''CREATE TABLE IF NOT EXISTS assignment_levels
+    cursor.execute('''CREATE TABLE IF NOT EXISTS assignments_level
                 (language_level TEXT PRIMARY KEY, amount_assigment INTEGER)''')
     cursor.execute('''CREATE TABLE IF NOT EXISTS assignments
                 (id INTEGER PRIMARY KEY, assignment_languages TEXT, assignment_level INTEGER, assigment_id INTEGER, assignment_name TEXT, assignment_text TEXT, assignment_test TEXT, assignment_output TEXT)''')
@@ -36,7 +36,7 @@ def _get_assignment_amount(language: str, level: int) -> int:
     language_level = f"{language}_{level}"
     conn = sqlite3.connect(ASSIGNMENT_DB_PATH)
     cursor = conn.cursor()
-    cursor.execute("SELECT amount_assigment FROM assignment_levels WHERE language_level = ?", (language_level,))
+    cursor.execute("SELECT amount_assigment FROM assignments_level WHERE language_level = ?", (language_level,))
     amount = cursor.fetchone()
     conn.close()
     return amount[0] if amount else 0
@@ -50,7 +50,7 @@ def update_assignment_amount(language: str, level: int, amount: int):
     language_level = f"{language}_{level}"
     conn = sqlite3.connect(ASSIGNMENT_DB_PATH)
     cursor = conn.cursor()
-    cursor.execute("INSERT OR REPLACE INTO assignment_levels (language_level, amount_assigment) VALUES (?, ?)", (language_level, new_amount))
+    cursor.execute("INSERT OR REPLACE INTO assignments_level (language_level, amount_assigment) VALUES (?, ?)", (language_level, new_amount))
     conn.commit()
     conn.close()
 

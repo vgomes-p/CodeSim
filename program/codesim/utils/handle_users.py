@@ -1,7 +1,7 @@
 import sqlite3
 import os
 
-DB_PATH = os.path.expanduser("~/.codesim/databases/codesim.db")
+DB_PATH = os.path.expanduser("~/.codesim/program/databases/codesim.db")
 
 
 def init_db():
