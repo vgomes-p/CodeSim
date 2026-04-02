@@ -63,7 +63,7 @@ long_line = "===================================================================
 
 def register_assignment():
     langs_suffix = {"python": "py", "c": "c", "cpp": "cpp", "java": "java"}
-    language = input("Programming language: ")
+    language = input("Programming language: ").lower()
     level = int(input("Difficulty level (0-10): "))
     assignment_name = input("Name: ")
     allowed_functions = input("Allowed functions (comma separated, leave empty for no restrictions): ")
