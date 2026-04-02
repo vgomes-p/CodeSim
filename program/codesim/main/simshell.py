@@ -1,6 +1,6 @@
 #Imports
 from codesim.utils.countdown import format_time, start_countdown, get_remaining_time
-from codesim.utils.database import add_user, get_user, user_exists
+from codesim.utils.handle_users import add_user, get_user, user_exists
 from codesim.utils.utils_fun import clear, letterby, press_enter
 from codesim.utils.handle_assigments import get_assignment
 from codesim.eval.handle_eval import eval

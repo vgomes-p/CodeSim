@@ -5,7 +5,7 @@ from codesim.utils.colors import *
 from codesim.utils.utils_fun import clear
 from .simshell import block_signals
 
-ASSIGNMENT_DB_PATH = os.path.expanduser("~/.codesim/assignments.db")
+ASSIGNMENT_DB_PATH = os.path.expanduser("~/.codesim/databases/assignments.db")
 MAKER_SHELL = f"{CYAN}Assignment Maker Shell{DEFAULT}: "
 HELP = """Create: Create a new assignment.
 Clear: Clear the screen.

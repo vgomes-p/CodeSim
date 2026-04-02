@@ -3,7 +3,7 @@ import sqlite3
 from random import shuffle
 import importlib
 
-ASSIGNMENT_DB_PATH = os.path.expanduser("~/.codesim/assignments.db")
+ASSIGNMENT_DB_PATH = os.path.expanduser("~/.codesim/databases/assignments.db")
 
 def init_mkdirs():
     os.mkdir("~/CodeSimDirs")
