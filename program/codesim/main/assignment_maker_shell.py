@@ -96,7 +96,7 @@ def register_assignment():
         assignment_output += line + "\n"
     
     assigment_id = _get_assignment_amount(language, level, in_level) + 1
-    add_assignment(language=language, level=level, assignment_in_level=in_level, assigment_id=assigment_id, assignment_score=assignment_score, assignment_name=assignment_name, assignment_text=assignment_text, assignment_test=assignment_test, assignment_output=assignment_output)
+    add_assignment(language=language, level=level, assignment_in_level=in_level, assigment_id=assigment_id, assignment_score=assignment_score, assignment_name=assignment_name, assignment_text=subject, assignment_test=assignment_test, assignment_output=assignment_output)
     update_assignment_amount(language, level, in_level)
     print(GREEN + "Assignment added successfully!" + DEFAULT)
 
