@@ -23,7 +23,7 @@ SIMTEXT = f"""{PINK}<<< COMMANDS AVAILABLE >>>{DEFAULT}
 {CYAN}update:{DEFAULT} shows exam current status"""
 
 #languages
-valid_languages = ["Python"]
+valid_languages = ["python"]
 LANGUAGE = ""
 
 
@@ -48,7 +48,7 @@ def create_new_user(login: str) -> tuple[str, str]:
     while True:
         print("Which language do you study? (we have simulation for Python only!)")
         tm.sleep(0.5)
-        language = input(f"{CREATESHELL}Language: ").strip().title() # Get language
+        language = input(f"{CREATESHELL}Language: ").strip().lower() # Get language
         if not language:
             tm.sleep(0.5)
             clear()
@@ -63,7 +63,7 @@ def create_new_user(login: str) -> tuple[str, str]:
     while True:
         print("Great, now choose the level you want to start with (It is highly suggested you start with level 0, even if you're already advanced!)\n[0 for beginner and 10 for advanced]")
         tm.sleep(0.5)
-        level_entry = input(f"{CREATESHELL}Level: ").strip() # Get language knowledge level
+        level_entry = input(f"{CREATESHELL}Level: ").strip()
         if not level_entry:
             tm.sleep(0.5)
             clear()
@@ -258,7 +258,7 @@ def run_program():
     start_countdown(14400) #start time countdown with 4 hours (14400 seconds)
     tm.sleep(1)
     in_level = 0
-    assignment_name = get_assignment(language, level, in_level)  #wip: função que pega nome do execicio || Get assigment name
+    assignment_name = get_assignment(language.lower(), level, in_level)  #wip: função que pega nome do execicio || Get assigment name
     remaining_time = str(format_time(get_remaining_time()))
     init_mkdirs()
     simshell(init_assigment=assignment_name, remaining_time=remaining_time, selected_level=selected_level, actual_level=level, try_num=try_num, general_score=general_score)

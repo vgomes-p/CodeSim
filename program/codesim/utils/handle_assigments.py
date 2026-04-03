@@ -30,16 +30,28 @@ def get_assignment(language: str, level: int, in_level: int) -> str:
     conn = sqlite3.connect(ASSIGNMENT_DB_PATH)
     cursor = conn.cursor()
     cursor.execute("SELECT amount_assigment FROM assignments_level WHERE language_level = ?", (language_level,))
-    how_many_assigments = cursor.fetchone()[0]
-    arr_assigment = [int(i) for i in range(1, how_many_assigments)]
+    result = cursor.fetchone()
+    if result is None or result[0] is None:
+        raise ValueError(f"No assignment count found for language_level: {language_level}")
+    how_many_assigments = int(result[0])
+    if how_many_assigments < 1:
+        raise ValueError(f"Invalid assignment count for language_level {language_level}: {how_many_assigments}")
+    arr_assigment = list(range(1, how_many_assigments + 1))
     shuffle(arr_assigment)
     chosen_assigment = arr_assigment[0]
+
     cursor.execute("SELECT assignment_name FROM assignments WHERE assignment_languages = ? AND assignment_level = ? AND assigment_id = ?", (language, level, chosen_assigment))
-    subject_name = cursor.fetchone()[0]
+    result = cursor.fetchone()
+    if result is None or result[0] is None:
+        raise ValueError(f"No assignment name found for language={language}, level={level}, id={chosen_assigment}")
+    subject_name = result[0]
+
     cursor.execute("SELECT assignment_text FROM assignments WHERE assignment_languages = ? AND assignment_level = ? AND assigment_id = ?", (language, level, chosen_assigment))
-    subject_text = cursor.fetchone()[0]
+    result = cursor.fetchone()
+    if result is None or result[0] is None:
+        raise ValueError(f"No assignment text found for language={language}, level={level}, id={chosen_assigment}")
+    subject_text = result[0]
+
     conn.close()
-    #subject_text = "This is an upcoming assignment. Stay tuned!"
-    #subject_name = "upcoming"
     mk_subject(subject_name, subject_text)
     return subject_name

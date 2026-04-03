@@ -111,8 +111,8 @@ def check_for_update():
         print(f"Unexpected error: {e}")
 
 #repo_root = "os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))"
-repo_root = "~/.codesim"
-program_root = "~/.codesim/program"
+repo_root = os.path.expanduser("~/.codesim")
+program_root = os.path.expanduser("~/.codesim/program")
 
 def pull_update():
     letterby("Pulling updates...")
