@@ -32,10 +32,11 @@ def mk_subject(subject_name: str, subject_text: str):
         f.write(subject_text)
 
 
-def get_assignment(language: str, level: int, in_level: int) -> str:
+def get_assignment(language: str, level: int, in_level: int, to_score: int=10) -> str:
     language_level = f"{language}_{level}"
     conn = sqlite3.connect(ASSIGNMENT_DB_PATH)
     cursor = conn.cursor()
+
     cursor.execute("SELECT amount_assigment FROM assignments_level WHERE language_level = ?", (language_level,))
     result = cursor.fetchone()
     if result is None or result[0] is None:
@@ -47,11 +48,12 @@ def get_assignment(language: str, level: int, in_level: int) -> str:
     shuffle(arr_assigment)
     chosen_assigment = arr_assigment[0]
 
-    cursor.execute("SELECT assignment_name FROM assignments WHERE assignment_languages = ? AND assignment_level = ? AND assigment_id = ?", (language, level, chosen_assigment))
+    cursor.execute("SELECT assignment_name, assignment_score FROM assignments WHERE assignment_languages = ? AND assignment_level = ? AND assignment_in_level = ? AND assigment_id = ?", (language, level, in_level, chosen_assigment))
     result = cursor.fetchone()
     if result is None or result[0] is None:
-        raise ValueError(f"No assignment name found for language={language}, level={level}, id={chosen_assigment}")
+        raise ValueError(f"No assignment name found for language={language}, level={level}, in_level={in_level}, id={chosen_assigment}")
     subject_name = result[0]
+    score = result[1]
 
     cursor.execute("SELECT assignment_text FROM assignments WHERE assignment_languages = ? AND assignment_level = ? AND assigment_id = ?", (language, level, chosen_assigment))
     result = cursor.fetchone()
@@ -61,4 +63,5 @@ def get_assignment(language: str, level: int, in_level: int) -> str:
 
     conn.close()
     mk_subject(subject_name, subject_text)
-    return subject_name
+    to_score -= int(score)
+    return subject_name, score, to_score

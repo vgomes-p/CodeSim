@@ -19,23 +19,23 @@ def init_assigment_db(): # Need to add level_in_level for assigments and assigme
     cursor.execute('''CREATE TABLE IF NOT EXISTS assignments_level
                 (language_level TEXT PRIMARY KEY, amount_assigment INTEGER)''')
     cursor.execute('''CREATE TABLE IF NOT EXISTS assignments
-                (id INTEGER PRIMARY KEY, assignment_languages TEXT, assignment_level INTEGER, assigment_id INTEGER, assignment_name TEXT, assignment_text TEXT, assignment_test TEXT, assignment_output TEXT)''')
+                (id INTEGER PRIMARY KEY, assignment_languages TEXT, assignment_level INTEGER, assigment_id INTEGER, assignment_score INTEGER, assignment_in_level INTEGER, assignment_name TEXT, assignment_text TEXT, assignment_test TEXT, assignment_output TEXT)''')
     conn.commit()
     conn.close()
 
 
-def add_assignment(language: str, level: int, assigment_id: int, assignment_name: str, assignment_text: str, assignment_test: str, assignment_output: str):
+def add_assignment(language: str, level: int, assigment_id: int, assignment_score: int, assignment_name: str, assignment_text: str, assignment_test: str, assignment_output: str):
     """Add a new user to the database."""
     conn = sqlite3.connect(ASSIGNMENT_DB_PATH)
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO assignments (assignment_languages, assignment_level, assigment_id, assignment_name, assignment_text, assignment_test, assignment_output) VALUES (?, ?, ?, ?, ?, ?, ?)", (language, level, assigment_id, assignment_name, assignment_text, assignment_test, assignment_output))
+    cursor.execute("INSERT INTO assignments (assignment_languages, assignment_level, assigment_id, assignment_score, assignment_name, assignment_text, assignment_test, assignment_output) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (language, level, assigment_id, assignment_score, assignment_name, assignment_text, assignment_test, assignment_output))
     conn.commit()
     conn.close()
 
 
-def _get_assignment_amount(language: str, level: int) -> int:
+def _get_assignment_amount(language: str, level: int, in_level: int) -> int:
     """Get the amount of assigments for a specific language and level."""
-    language_level = f"{language}_{level}"
+    language_level = f"{language}_{level}_{in_level}"
     conn = sqlite3.connect(ASSIGNMENT_DB_PATH)
     cursor = conn.cursor()
     cursor.execute("SELECT amount_assigment FROM assignments_level WHERE language_level = ?", (language_level,))
@@ -44,13 +44,13 @@ def _get_assignment_amount(language: str, level: int) -> int:
     return amount[0] if amount else 0
 
 
-def update_assignment_amount(language: str, level: int, amount: int):
+def update_assignment_amount(language: str, level: int, in_level: int):
     """Update the amount of assigments for a specific language and level."""
-    old_amount = int(_get_assignment_amount(language, level))
+    old_amount = int(_get_assignment_amount(language, level, in_level))
     if not old_amount:
         old_amount = 0
     new_amount = old_amount + 1
-    language_level = f"{language}_{level}"
+    language_level = f"{language}_{level}_{in_level}"
     conn = sqlite3.connect(ASSIGNMENT_DB_PATH)
     cursor = conn.cursor()
     cursor.execute("INSERT OR REPLACE INTO assignments_level (language_level, amount_assigment) VALUES (?, ?)", (language_level, new_amount))
@@ -65,6 +65,8 @@ def register_assignment():
     langs_suffix = {"python": "py", "c": "c", "cpp": "cpp", "java": "java"}
     language = input("Programming language: ").lower()
     level = int(input("Difficulty level (0-10): "))
+    in_level = int(input("In level (0-10): "))
+    assignment_score = int(input("Assignment score (5 or 10): "))
     assignment_name = input("Name: ")
     allowed_functions = input("Allowed functions (comma separated, leave empty for no restrictions): ")
 
@@ -93,9 +95,9 @@ def register_assignment():
             break
         assignment_output += line + "\n"
     
-    assigment_id = _get_assignment_amount(language, level) + 1
-    add_assignment(language=language, level=level, assigment_id=assigment_id, assignment_name=assignment_name, assignment_text=subject, assignment_test=assignment_test, assignment_output=assignment_output)
-    update_assignment_amount(language, level, assigment_id)
+    assigment_id = _get_assignment_amount(language, level, in_level) + 1
+    add_assignment(language=language, level=level, assigment_id=assigment_id, assignment_score=assignment_score, assignment_in_level=in_level, assignment_name=assignment_name, assignment_text=subject, assignment_test=assignment_test, assignment_output=assignment_output)
+    update_assignment_amount(language, level, in_level)
     print(GREEN + "Assignment added successfully!" + DEFAULT)
 
 
