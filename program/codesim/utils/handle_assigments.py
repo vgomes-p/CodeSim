@@ -29,7 +29,7 @@ def get_assignment(language: str, level: int, in_level: int) -> str:
     language_level = f"{language}_{level}"
     conn = sqlite3.connect(ASSIGNMENT_DB_PATH)
     cursor = conn.cursor()
-    cursor.execute("SELECT amount_assigment FROM assigments_level WHERE language_level = ?", (language_level,))
+    cursor.execute("SELECT amount_assigment FROM assignments_level WHERE language_level = ?", (language_level,))
     how_many_assigments = cursor.fetchone()[0]
     arr_assigment = [int(i) for i in range(1, how_many_assigments)]
     shuffle(arr_assigment)
