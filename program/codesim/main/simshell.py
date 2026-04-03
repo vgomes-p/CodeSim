@@ -19,7 +19,7 @@ SIMTEXT = f"""{PINK}<<< COMMANDS AVAILABLE >>>{DEFAULT}
 {CYAN}clear:{DEFAULT} clear the terminal
 {CYAN}eval:{DEFAULT} evaluate
 {CYAN}finish:{DEFAULT} end the exam
-{CYAN}time:{DEFAULT} show much time rest
+{CYAN}time:{DEFAULT} show much remaining time
 {CYAN}update:{DEFAULT} shows exam current status"""
 
 #languages

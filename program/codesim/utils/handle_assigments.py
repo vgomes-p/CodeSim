@@ -1,4 +1,5 @@
 import os
+import shutil
 import sqlite3
 from random import shuffle
 import importlib
@@ -18,10 +19,10 @@ def init_mkdirs():
 
 
 def end_rmdirs():
-    os.rmdir(SUBJECTS)
-    os.rmdir(CODEGIT)
-    os.rmdir(TRACEBACK)
-    os.rmdir(CODESIMDIRS)
+    shutil.rmtree(SUBJECTS, ignore_errors=True)
+    shutil.rmtree(CODEGIT, ignore_errors=True)
+    shutil.rmtree(TRACEBACK, ignore_errors=True)
+    shutil.rmtree(CODESIMDIRS, ignore_errors=True)
 
 
 def mk_subject(subject_name: str, subject_text: str):

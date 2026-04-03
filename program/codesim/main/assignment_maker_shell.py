@@ -12,7 +12,7 @@ Clear: Clear the screen.
 Exit: Exit the assignment maker shell."""
 
 
-def init_assigment_db(): # Need to add level_in_level for assigments
+def init_assigment_db(): # Need to add level_in_level for assigments and assigment_score
     """Initialize the database and create the assigments table if it doesn't exist."""
     conn = sqlite3.connect(ASSIGNMENT_DB_PATH)
     cursor = conn.cursor()
