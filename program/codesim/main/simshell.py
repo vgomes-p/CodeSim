@@ -207,7 +207,7 @@ def simshell(init_assigment: str, remaining_time: str, selected_level: str, actu
                         if eval_score == 100:
                             general_score += 10
                             try_num = 0
-                            assignment_name = "new_assignment()"
+                            assignment_name = get_assignment(language, level, (in_level + 1))
                             new_assigment_text(actual_assigment_name=assignment_name, remaining_time=remaining_time, try_num=try_num, general_score=general_score)
                         else:
                             try_num += 1
@@ -246,7 +246,7 @@ def finish_program():
         clear()
 
 def run_program():
-    global general_score, try_num, eval_score, language
+    global general_score, try_num, eval_score, language, level, in_level
     general_score = 0
     try_num = 0
     eval_score = 0
@@ -256,6 +256,7 @@ def run_program():
     intro_text(language=language, selected_level=selected_level)
     start_countdown(14400) #start time countdown with 4 hours (14400 seconds)
     tm.sleep(1)
+    in_level = 0
     assignment_name = get_assignment(language, level, in_level)  #wip: função que pega nome do execicio || Get assigment name
     remaining_time = str(format_time(get_remaining_time()))
     simshell(init_assigment=assignment_name, remaining_time=remaining_time, selected_level=selected_level, actual_level=level, try_num=try_num, general_score=general_score)
