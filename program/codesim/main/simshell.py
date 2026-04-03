@@ -258,9 +258,9 @@ def run_program():
     start_countdown(14400) #start time countdown with 4 hours (14400 seconds)
     tm.sleep(1)
     in_level = 0
+    init_mkdirs()
     assignment_name = get_assignment(language.lower(), level, in_level)  #wip: função que pega nome do execicio || Get assigment name
     remaining_time = str(format_time(get_remaining_time()))
-    init_mkdirs()
     simshell(init_assigment=assignment_name, remaining_time=remaining_time, selected_level=selected_level, actual_level=level, try_num=try_num, general_score=general_score)
     end_rmdirs()
     finish_program()
