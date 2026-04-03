@@ -5,10 +5,10 @@ import importlib
 
 ASSIGNMENT_DB_PATH = os.path.expanduser("~/.codesim/program/databases/assignments.db")
 
-CODESIMDIRS = os.path.expanduser("~/CodeSimDirs")
-SUBJECTS = os.path.expanduser("~/CodeSimDirs/Subject")
-CODEGIT = os.path.expanduser("~/CodeSimDirs/CodeGit")
-TRACEBACK = os.path.expanduser("~/CodeSimDirs/TraceBack")
+CODESIMDIRS = os.path.expanduser("~/CodeSimDirs/")
+SUBJECTS = os.path.expanduser("~/CodeSimDirs/Subject/")
+CODEGIT = os.path.expanduser("~/CodeSimDirs/CodeGit/")
+TRACEBACK = os.path.expanduser("~/CodeSimDirs/TraceBack/")
 
 def init_mkdirs():
     os.mkdir(CODESIMDIRS)
@@ -25,7 +25,7 @@ def end_rmdirs():
 
 
 def mk_subject(subject_name: str, subject_text: str):
-    dir_path = os.path.expanduser(f"~/CodeSimDirs/Subject/{subject_name}")
+    dir_path = os.path.expanduser(f"~/CodeSimDirs/Subject/{subject_name}/")
     os.mkdir(dir_path)
     with open(f"{dir_path}/{subject_name}.txt", "w") as f:
         f.write(subject_text)
