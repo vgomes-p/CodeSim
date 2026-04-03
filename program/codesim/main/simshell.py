@@ -141,25 +141,44 @@ You will have {CYAN}4h:00m:00s{DEFAULT} to finish this exam.
 If you are ready, press ENTER to start!""")
     press_enter()
 
-def update_text(actual_assigment_name: str, remaining_time: str, try_num: int, general_score: int):
+def update_text(actual_assigment_name: str, remaining_time: str, try_num: int, general_score: int, score: int):
     tm.sleep(2)
-    print(f"""{PINK}<<< UPDATE >>>{DEFAULT}
-You are working on assignment {CYAN + actual_assigment_name + DEFAULT}, worth 10 points.
-You have attempted this assignment {PINK + str(try_num) + DEFAULT} time(s) during this session.
+    print(f"""The assignment you are now working on is {CYAN + actual_assigment_name + DEFAULT}, worth {str(score)} points.
+Read the subject at '~/CodeSimDirs/Subject/{actual_assigment_name}/'
+You must turn this assignment at the directory '~/CodeSimDirs/CodeGit/{actual_assigment_name}/'.
+You have attempted this assignment {PINK + str(try_num) + DEFAULT} time(s) during this session and your current score is {YLOW + str(general_score)}/100{DEFAULT}.
+Run 'eval' when you are sure you have solved it.
+You still have {CYAN + remaining_time + DEFAULT} remaining to finish this exam session.""")
+
+def init_text(actual_assigment_name: str, remaining_time: str, try_num: int, general_score: int, score: int):
+    update_text(actual_assigment_name=actual_assigment_name, remaining_time=remaining_time, try_num=try_num, general_score=general_score, score=score)
+    press_enter()
+
+def new_assigment_text(actual_assigment_name: str, remaining_time: str, try_num: int, general_score: int, score: int):
+    tm.sleep(2)
+    print(f"""{PINK}<<< NEW ASSIGNMENT >>>{DEFAULT}
+The assignment you are now working on is {CYAN + actual_assigment_name + DEFAULT}, worth {str(score)} points.
+Read the subject at '~/CodeSimDirs/Subject/{actual_assigment_name}/'
+You must turn this assignment at the directory '~/CodeSimDirs/CodeGit/{actual_assigment_name}/' to be able to evaluate it.
 Your current score is {YLOW + str(general_score)}/100{DEFAULT}.
+Run 'eval' when you are sure you have solved it.
 You still have {CYAN + remaining_time + DEFAULT} remaining to finish this exam session.
 Press ENTER to continue!""")
     press_enter()
 
-def new_assigment_text(actual_assigment_name: str, remaining_time: str, try_num: int, general_score: int):
+def failed_assigment_text(actual_assigment_name: str, remaining_time: str, try_num: int, general_score: int, score: int):
     tm.sleep(2)
-    print(f"""{PINK}<<< NEW ASSIGNMENT >>>{DEFAULT}
-You are not working on assignment {CYAN + actual_assigment_name + DEFAULT}, worth 10 points.
-You have attempted this assignment {PINK + str(try_num) + DEFAULT} time(s) during this session.
+    print(f"""{RED}<<< ASSIGNMENT FAILED >>>{DEFAULT}
+Failed to complete the assignment {CYAN + actual_assigment_name + DEFAULT} worth {str(score)} points.
+TraceBack of this assignment may be available at '~/CodeSimDirs/TraceBack/'.
+Now you have attempted this assignment {PINK + str(try_num) + DEFAULT} time(s) during this session.
 Your current score is {YLOW + str(general_score)}/100{DEFAULT}.
 You still have {CYAN + remaining_time + DEFAULT} remaining to finish this exam session.
+Keep working on this assignment at the directory '~/CodeSimDirs/CodeGit/{actual_assigment_name}/'
+Run 'eval' when you are sure you have solved it.
 Press ENTER to continue!""")
     press_enter()
+
 
 def _finish(actual_assigment_name: str, remaining_time: str, general_score: int) -> int:
     valid_ret = ['r', 'f']
@@ -184,15 +203,22 @@ You still have {CYAN + remaining_time + DEFAULT} remaining to finish this exam s
     else:
         return 1
 
-def simshell(init_assigment: str, remaining_time: str, selected_level: str, actual_level: str, try_num: int, general_score: int):
+def simshell(init_assigment: str, remaining_time: str, selected_level: str, actual_level: str, try_num: int, general_score: int, init_score: int, init_to_score: int, init_assignment_id: int):
     print(SIMTEXT)
-    update_text(actual_assigment_name=init_assigment, remaining_time=remaining_time, try_num=try_num, general_score=general_score)
+    init_text(actual_assigment_name=init_assigment, remaining_time=remaining_time, try_num=try_num, general_score=general_score)
+    pass_mess = 0 # create a holder for "pass level" message signal
     finish_stats = 0 # create a holder for "finish" command signal
+    score = init_score
+    to_score = init_to_score
+    assignment_id = init_assignment_id
     while finish_stats != 1 and get_remaining_time() > 0: #Main loop that will run while finish signal is not given and time it not out
         assignment_name = init_assigment
-        while get_remaining_time() > 0 and general_score != 100:
+        while get_remaining_time() > 0 and general_score != 100 and in_level != 11: #Loop that will run while time is not out, score is not 100 and level is not 11 (since there is no level 11)
             with block_signals():
                 try:
+                    if general_score >= 100 and pass_mess == 0:
+                        print(GREEN, BOLD, "Congratulations! You have passed this level! If you haven't reach the level 10 yet, you may continue until you reach it.", DEFAULT, sep='')
+                        pass_mess = 1
                     entry = input(CODESHELL).strip().lower()
                     if entry == "time":
                         print(f"You still have {CYAN + format_time(get_remaining_time()) + DEFAULT} remaining to finish this exam session!")
@@ -204,17 +230,20 @@ def simshell(init_assigment: str, remaining_time: str, selected_level: str, actu
                             finish_stats = 1
                             break
                     elif entry == "eval":
-                        eval_score = 100 #eval()
+                        eval_score = eval(language=language, level=level, in_level=in_level, assigment_name=assignment_name, assigment_id=assignment_id)
                         if eval_score == 100:
-                            general_score += 10
+                            if to_score == 0:
+                                in_level += 1
+                                to_score = 10
+                            general_score += score
                             try_num = 0
-                            assignment_name = get_assignment(language, level, (in_level + 1))
+                            if in_level == 11:
+                                continue
+                            assignment_name, score, to_score, assignment_id = get_assignment(language, level, in_level, to_score)
                             new_assigment_text(actual_assigment_name=assignment_name, remaining_time=remaining_time, try_num=try_num, general_score=general_score)
                         else:
                             try_num += 1
-                            print(RED, BOLD, "××× ASSIGNMENT FAILED ×××", DEFAULT, sep='')
-                            print(f"You still have {CYAN + format_time(get_remaining_time()) + DEFAULT}  remaining to finish this exam session.\nPress ENTER to continue!")
-                            press_enter()
+                            failed_assigment_text(actual_assigment_name=assignment_name, remaining_time=remaining_time, try_num=try_num, general_score=general_score, score=score)
                     elif entry == "update":
                         update_text(actual_assigment_name=assignment_name, remaining_time=remaining_time, try_num=try_num, general_score=general_score)
                     elif entry == "clear":
@@ -225,15 +254,15 @@ def simshell(init_assigment: str, remaining_time: str, selected_level: str, actu
                         print(RED, "Error:", DEFAULT, YLOW, f" '{entry}'", DEFAULT, " is not a valid command! run 'help' to see valid commands!", sep='')
                 except EOFError:
                     pass
-        if general_score == 100 or finish_stats == 1:
-            if selected_level == actual_level:
-                #print(f"Congrats on passing to the next level!")
-                # CREATE A FUNCTION TO UPDATE THE DATABASE
-                return 0
-            else:
-                return 0
-        print("time is up")
-        return 0
+        if general_score >= 100 and selected_level == actual_level:
+            # CREATE A FUNCTION TO UPDATE THE DATABASE
+            print(f"Congrats on passing to the next level!")
+        if get_remaining_time() <= 0:
+            print("time is up")
+        if general_score >= 100:
+            return 0
+        else:
+            return 0
     return 0
 
 def finish_program():
@@ -241,10 +270,21 @@ def finish_program():
     letterby('[SIMULATOR ENDED]')
     tm.sleep(2)
     clear()
-    for c in range(10, -1, -1):
+    for c in range(5, -1, -1):
         print(f"Program will be finished in {c} seconds")
         tm.sleep(1)
         clear()
+
+def erase_session_data():
+    print("Do you want to erase session data (at '~/CodeSimDirs/'? [y/n]: ")
+    while True:
+        entry = input().strip().lower()
+        if entry == 'y':
+            end_rmdirs()
+        elif entry == 'n':
+            print("Session data not erased. You can find it at '~/CodeSimDirs/'")
+        else:
+            print("Please enter 'y' to erase session data or 'n' to keep it: ")
 
 def run_program():
     global general_score, try_num, eval_score, language, level, in_level
@@ -259,9 +299,9 @@ def run_program():
     tm.sleep(1)
     in_level = 0
     init_mkdirs()
-    assignment_name = get_assignment(language.lower(), level, in_level)  #wip: função que pega nome do execicio || Get assigment name
+    assignment_name, assignment_score, assignemnt_to_score, assignment_id = get_assignment(language.lower(), level, in_level) #wip: função que pega nome do execicio || Get assigment name
     remaining_time = str(format_time(get_remaining_time()))
-    simshell(init_assigment=assignment_name, remaining_time=remaining_time, selected_level=selected_level, actual_level=level, try_num=try_num, general_score=general_score)
-    end_rmdirs()
+    simshell(init_assigment=assignment_name, remaining_time=remaining_time, selected_level=selected_level, actual_level=level, try_num=try_num, general_score=general_score, init_score=assignment_score, init_to_score=assignemnt_to_score, init_assignment_id=assignment_id)
+    erase_session_data()
     finish_program()
     return 0

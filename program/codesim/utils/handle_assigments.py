@@ -32,7 +32,7 @@ def mk_subject(subject_name: str, subject_text: str):
         f.write(subject_text)
 
 
-def get_assignment(language: str, level: int, in_level: int, to_score: int=10) -> str:
+def get_assignment(language: str, level: int, in_level: int, to_score: int=10):
     language_level = f"{language}_{level}"
     conn = sqlite3.connect(ASSIGNMENT_DB_PATH)
     cursor = conn.cursor()
@@ -64,4 +64,4 @@ def get_assignment(language: str, level: int, in_level: int, to_score: int=10) -
     conn.close()
     mk_subject(subject_name, subject_text)
     to_score -= int(score)
-    return subject_name, score, to_score
+    return subject_name, score, to_score, chosen_assigment
