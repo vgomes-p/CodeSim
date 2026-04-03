@@ -135,7 +135,7 @@ def select_level(actual_level: int) -> str:
 def intro_text(language: str, selected_level: str):
     tm.sleep(2)
     print(f"""You are about to take an exam for {YLOW + language + DEFAULT} programming at level {YLOW + str(selected_level) + DEFAULT}!
-You need {YLOW}100/100{DEFAULT} to pass to level {PINK + str(selected_level + 1) + DEFAULT}.
+You need {YLOW}100/100{DEFAULT} to pass to level {PINK + str(int(selected_level) + 1) + DEFAULT}.
 You will have {CYAN}4h:00m:00s{DEFAULT} to finish this exam.
 If you are ready, press ENTER to start!""")
     press_enter()
