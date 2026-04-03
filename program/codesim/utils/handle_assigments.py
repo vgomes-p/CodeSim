@@ -25,8 +25,9 @@ def end_rmdirs():
 
 
 def mk_subject(subject_name: str, subject_text: str):
-    os.mkdir(f"~/CodeSimDirs/Subject/{subject_name}")
-    with open(f"~/CodeSimDirs/Subject/{subject_name}/{subject_name}.txt", "w") as f:
+    dir_path = os.path.expanduser(f"~/CodeSimDirs/Subject/{subject_name}")
+    os.mkdir(dir_path)
+    with open(f"{dir_path}/{subject_name}.txt", "w") as f:
         f.write(subject_text)
 
 
