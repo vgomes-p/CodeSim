@@ -3,6 +3,7 @@ from codesim.utils.countdown import format_time, start_countdown, get_remaining_
 from codesim.utils.handle_users import add_user, get_user, user_exists
 from codesim.utils.utils_fun import clear, letterby, press_enter
 from codesim.utils.handle_assigments import get_assignment
+from codesim.utils.handle_assigments import init_mkdirs, end_rmdirs
 from codesim.eval.handle_eval import eval
 from contextlib import contextmanager
 from codesim.utils.colors import *
@@ -259,6 +260,8 @@ def run_program():
     in_level = 0
     assignment_name = get_assignment(language, level, in_level)  #wip: função que pega nome do execicio || Get assigment name
     remaining_time = str(format_time(get_remaining_time()))
+    init_mkdirs()
     simshell(init_assigment=assignment_name, remaining_time=remaining_time, selected_level=selected_level, actual_level=level, try_num=try_num, general_score=general_score)
+    end_rmdirs()
     finish_program()
     return 0
