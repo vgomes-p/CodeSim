@@ -235,7 +235,7 @@ def simshell(init_assigment: str, remaining_time: str, selected_level: str, actu
                         eval_score = eval(language=language, level=level, in_level=in_level, assigment_name=assignment_name, assigment_id=assignment_id)
                         if eval_score == 100:
                             previous_in_level = in_level
-                            if to_score == 0:
+                            if to_score <= 5:
                                 in_level += 1
                                 to_score = 10
                             general_score += score
