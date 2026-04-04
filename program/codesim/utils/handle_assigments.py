@@ -31,7 +31,7 @@ def mk_subject(subject_name: str, subject_text: str):
         f.write(subject_text)
 
 
-def get_assignment(language: str, level: int, in_level: int, to_score: int=10):
+def get_assignment(language: str, level: int, in_level: int, to_score: int=10, previous_assigment=None, previous_in_level=None):
     language_level = f"{language}_{level}_{in_level}"
     conn = sqlite3.connect(ASSIGNMENT_DB_PATH)
     cursor = conn.cursor()
@@ -47,6 +47,15 @@ def get_assignment(language: str, level: int, in_level: int, to_score: int=10):
     shuffle(arr_assigment)
     chosen_assigment = arr_assigment[0]
 
+    if previous_in_level is not None and previous_in_level != in_level:
+        previous_assigment = None
+
+    while chosen_assigment == previous_assigment:
+        shuffle(arr_assigment)
+        chosen_assigment = arr_assigment[0]
+    previous_assigment = chosen_assigment
+    previous_in_level = in_level
+
     cursor.execute("SELECT assignment_name, assignment_score FROM assignments WHERE assignment_languages = ? AND assignment_level = ? AND assignment_in_level = ? AND assigment_id = ?", (language, level, in_level, chosen_assigment))
     result = cursor.fetchone()
     if result is None or result[0] is None:
@@ -54,10 +63,10 @@ def get_assignment(language: str, level: int, in_level: int, to_score: int=10):
     subject_name = result[0]
     score = result[1]
 
-    cursor.execute("SELECT assignment_text FROM assignments WHERE assignment_languages = ? AND assignment_level = ? AND assigment_id = ?", (language, level, chosen_assigment))
+    cursor.execute("SELECT assignment_text FROM assignments WHERE assignment_languages = ? AND assignment_level = ? AND assignment_in_level = ? AND assigment_id = ?", (language, level, in_level, chosen_assigment))
     result = cursor.fetchone()
     if result is None or result[0] is None:
-        raise ValueError(f"No assignment text found for language={language}, level={level}, id={chosen_assigment}")
+        raise ValueError(f"No assignment text found for language={language}, level={level}, in_level={in_level}, id={chosen_assigment}")
     subject_text = result[0]
 
     conn.close()

@@ -234,6 +234,7 @@ def simshell(init_assigment: str, remaining_time: str, selected_level: str, actu
                     elif entry == "eval":
                         eval_score = eval(language=language, level=level, in_level=in_level, assigment_name=assignment_name, assigment_id=assignment_id)
                         if eval_score == 100:
+                            previous_in_level = in_level
                             if to_score == 0:
                                 in_level += 1
                                 to_score = 10
@@ -241,7 +242,7 @@ def simshell(init_assigment: str, remaining_time: str, selected_level: str, actu
                             try_num = 0
                             if in_level == 11:
                                 continue
-                            assignment_name, score, to_score, assignment_id = get_assignment(language, level, in_level, to_score)
+                            assignment_name, score, to_score, assignment_id = get_assignment(language, level, in_level, to_score, assignment_id, previous_in_level)
                             new_assigment_text(actual_assigment_name=assignment_name, remaining_time=remaining_time, try_num=try_num, general_score=general_score, score=score)
                         else:
                             try_num += 1
