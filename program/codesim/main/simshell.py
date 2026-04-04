@@ -205,7 +205,7 @@ You still have {CYAN + remaining_time + DEFAULT} remaining to finish this exam s
 
 def simshell(init_assigment: str, remaining_time: str, selected_level: str, actual_level: str, try_num: int, general_score: int, init_score: int, init_to_score: int, init_assignment_id: int):
     print(SIMTEXT)
-    init_text(actual_assigment_name=init_assigment, remaining_time=remaining_time, try_num=try_num, general_score=general_score)
+    init_text(actual_assigment_name=init_assigment, remaining_time=remaining_time, try_num=try_num, general_score=general_score, score=init_score)
     pass_mess = 0 # create a holder for "pass level" message signal
     finish_stats = 0 # create a holder for "finish" command signal
     score = init_score
@@ -240,12 +240,12 @@ def simshell(init_assigment: str, remaining_time: str, selected_level: str, actu
                             if in_level == 11:
                                 continue
                             assignment_name, score, to_score, assignment_id = get_assignment(language, level, in_level, to_score)
-                            new_assigment_text(actual_assigment_name=assignment_name, remaining_time=remaining_time, try_num=try_num, general_score=general_score)
+                            new_assigment_text(actual_assigment_name=assignment_name, remaining_time=remaining_time, try_num=try_num, general_score=general_score, score=score)
                         else:
                             try_num += 1
                             failed_assigment_text(actual_assigment_name=assignment_name, remaining_time=remaining_time, try_num=try_num, general_score=general_score, score=score)
                     elif entry == "update":
-                        update_text(actual_assigment_name=assignment_name, remaining_time=remaining_time, try_num=try_num, general_score=general_score)
+                        update_text(actual_assigment_name=assignment_name, remaining_time=remaining_time, try_num=try_num, general_score=general_score, score=score)
                     elif entry == "clear":
                         clear()
                     elif entry == "help":
@@ -298,8 +298,12 @@ def run_program():
     start_countdown(14400) #start time countdown with 4 hours (14400 seconds)
     tm.sleep(1)
     in_level = 0
+    try:
+        end_rmdirs()
+    except FileNotFoundError:
+        pass
     init_mkdirs()
-    assignment_name, assignment_score, assignemnt_to_score, assignment_id = get_assignment(language.lower(), level, in_level) #wip: função que pega nome do execicio || Get assigment name
+    assignment_name, assignment_score, assignemnt_to_score, assignment_id = get_assignment(language.lower(), level, in_level) 
     remaining_time = str(format_time(get_remaining_time()))
     simshell(init_assigment=assignment_name, remaining_time=remaining_time, selected_level=selected_level, actual_level=level, try_num=try_num, general_score=general_score, init_score=assignment_score, init_to_score=assignemnt_to_score, init_assignment_id=assignment_id)
     erase_session_data()
