@@ -2,7 +2,6 @@ import os
 import shutil
 import sqlite3
 from random import shuffle
-import importlib
 
 ASSIGNMENT_DB_PATH = os.path.expanduser("~/.codesim/program/databases/assignments.db")
 

@@ -9,6 +9,7 @@ import time as tm
 import subprocess
 import requests
 import argparse
+import shutil
 import sys
 import os
 
@@ -110,7 +111,6 @@ def check_for_update():
         tm.sleep(2)
         print(f"Unexpected error: {e}")
 
-#repo_root = "os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))"
 repo_root = os.path.expanduser("~/.codesim")
 program_root = os.path.expanduser("~/.codesim/program")
 
@@ -120,7 +120,7 @@ def pull_update():
     try:
         subprocess.run(["git", "pull", "origin", "main"], cwd=repo_root, check=True, text=True, capture_output=True)
         letterby("Updates pulled successfully.")
-        letterby("Run 'codesim --install' to install it.")
+        letterby("Run 'codesim --update' to install it.")
     except subprocess.CalledProcessError as e:
         print()
         tm.sleep(2)
@@ -140,7 +140,7 @@ def install_update():
     letterby("Installing updates...")
     tm.sleep(1)
     try:
-        subprocess.run(["sudo", "pip", "install", "-e", ".", "-break-system-packages"], cwd=program_root, check=True, text=True, capture_output=True)
+        subprocess.run(["sudo", "pip", "install", "-e", ".", "--break-system-packages"], cwd=program_root, check=True, text=True, capture_output=True)
         letterby("Updates installed successfully.")
     except subprocess.CalledProcessError as e:
         print()
@@ -167,6 +167,7 @@ def uninstall():
             tm.sleep(1)
             letterby("To uninstall CodeSim, please run: sudo pip uninstall codesim --break-system-packages")
             letterby("Thank you for using CodeSim! :)")
+            shutil.rmtree(repo_root, ignore_errors=True)
             return (0)
         elif entry == "n":
             letterby("Uninstallation cancelled.")
