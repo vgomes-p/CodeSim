@@ -152,6 +152,7 @@ You still have {CYAN + remaining_time + DEFAULT} remaining to finish this exam s
 
 def init_text(actual_assigment_name: str, remaining_time: str, try_num: int, general_score: int, score: int):
     update_text(actual_assigment_name=actual_assigment_name, remaining_time=remaining_time, try_num=try_num, general_score=general_score, score=score)
+    print("Press ENTER to start working on this assignment!")
     press_enter()
 
 def new_assigment_text(actual_assigment_name: str, remaining_time: str, try_num: int, general_score: int, score: int):
@@ -211,6 +212,7 @@ def simshell(init_assigment: str, remaining_time: str, selected_level: str, actu
     score = init_score
     to_score = init_to_score
     assignment_id = init_assignment_id
+    in_level = 0
     while finish_stats != 1 and get_remaining_time() > 0: #Main loop that will run while finish signal is not given and time it not out
         assignment_name = init_assigment
         while get_remaining_time() > 0 and general_score != 100 and in_level != 11: #Loop that will run while time is not out, score is not 100 and level is not 11 (since there is no level 11)
