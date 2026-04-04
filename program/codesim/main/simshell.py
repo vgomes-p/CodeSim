@@ -284,10 +284,13 @@ def erase_session_data():
         entry = input().strip().lower()
         if entry == 'y':
             end_rmdirs()
+            break
         elif entry == 'n':
             print("Session data not erased. You can find it at '~/CodeSimDirs/'")
+            break
         else:
             print("Please enter 'y' to erase session data or 'n' to keep it: ")
+            continue
 
 def run_program():
     global general_score, try_num, eval_score, language, level, in_level
